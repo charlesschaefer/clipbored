@@ -42,7 +42,9 @@ pub fn setup_tray_menu(app_handle: &AppHandle, update_tray: Option<bool>) {
 
     // Add separator and quit
     let quit_item = MenuItem::with_id(app_handle, "quit", "Quit", true, None::<&str>).unwrap();
+    let show_item = MenuItem::with_id(app_handle, "show", "Settings", true, None::<&str>).unwrap();
     //menu_items_vec.push(MenuItem::Separator(app_handle));
+    menu.append(&show_item).unwrap();
     menu.append(&quit_item).unwrap();
 
     if let Some(_) = update_tray {

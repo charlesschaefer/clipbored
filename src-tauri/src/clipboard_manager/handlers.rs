@@ -1,5 +1,3 @@
-use std::convert::Infallible;
-
 use tauri::{
     menu::MenuEvent, AppHandle, Manager
 };
@@ -17,6 +15,7 @@ pub fn handle_tray_event(
     let history = app.state::<ClipboardHistory>();
     match event.id.0.as_str() {
                 "quit" => std::process::exit(0),
+                "show" => app.get_webview_window("main").unwrap().show().unwrap(),
                 item_id if item_id.starts_with("item_") => {
                     if let Ok(index) = item_id[5..].parse::<usize>() {
                         let items = history.get_items();

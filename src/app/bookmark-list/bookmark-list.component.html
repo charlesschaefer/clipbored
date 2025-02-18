@@ -1,7 +1,8 @@
-<h2>Bookmarked Items</h2>
-<ul>
-    <li *ngFor="let bookmark of bookmarks(); let i = index">
-        {{ bookmark.content }}
-        <button (click)="removeBookmark(i)">X</button>
-    </li>
-</ul>
+<p-fieldset legend="Bookmarks" [toggleable]="true">
+    <ul>
+        <li *ngFor="let bookmark of bookmarks(); let i = index">
+            {{ bookmark.content }}
+            <button (click)="removeBookmark(i)">X</button>
+        </li>
+    </ul>
+</p-fieldset>

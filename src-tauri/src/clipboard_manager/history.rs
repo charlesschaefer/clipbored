@@ -44,7 +44,6 @@ impl Handler {
 impl ClipboardHandler for Handler {
     fn on_clipboard_change(&mut self) -> CallbackResult {
         let app = self.app.lock().unwrap();
-        println!("Clipboard change happened!");
         let clipboard = app.clipboard();
         let history = app.state::<ClipboardHistory>();
 

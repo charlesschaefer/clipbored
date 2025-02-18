@@ -37,8 +37,6 @@ pub fn get_config(app: tauri::AppHandle) -> Option<AppConfig> {
 
 #[tauri::command]
 pub fn set_config(app: tauri::AppHandle, config: AppConfig) -> Result<(), String> {
-    println!("saving the config {:?}", config);
-
     // Save the config to a file using app.app_handle()
     if let Err(e) = save_config_to_file(&app, &config) {
         return Err(format!("Failed to save config: {}", e));

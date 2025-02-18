@@ -2,11 +2,15 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, signal, WritableSignal } from '@angular/core';
 import { invoke } from "@tauri-apps/api/core";
 import { Bookmark } from '../app-config.model';
+import { FieldsetModule } from 'primeng/fieldset';
 
 @Component({
   selector: 'app-bookmark-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    FieldsetModule
+  ],
   templateUrl: './bookmark-list.component.html',
   styleUrl: './bookmark-list.component.css'
 })

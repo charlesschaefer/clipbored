@@ -1,40 +1,49 @@
-<h2>App Configuration</h2>
+<p-card header="App Configuration" class="config-form-card">
+    <form [formGroup]="configForm" (ngSubmit)="saveConfig()" class="config-form">
+        <div class="flex flex-column align-center content-justify">
+            <div class="p-field">
+                <p-iftalabel>
+                    <p-inputNumber id="maxItems" formControlName="maxItems" [min]="1" />
+                    <label for="maxItems">Max Items to Store</label>
+                    <div *ngIf="configForm.get('maxItems')?.invalid && configForm.get('maxItems')?.touched">
+                        <span *ngIf="configForm.get('maxItems')?.errors?.['required']">Max Items is required.</span>
+                        <span *ngIf="configForm.get('maxItems')?.errors?.['min']">Max Items must be at least 1.</span>
+                    </div>
+                </p-iftalabel>
+            </div>
 
-<form [formGroup]="configForm" (ngSubmit)="saveConfig()">
-    <div>
-        <label for="maxItems">Max Items to Store:</label>
-        <input type="number" id="maxItems" formControlName="maxItems" />
-        <div *ngIf="configForm.get('maxItems')?.invalid && configForm.get('maxItems')?.touched">
-            <span *ngIf="configForm.get('maxItems')?.errors?.['required']">Max Items is required.</span>
-            <span *ngIf="configForm.get('maxItems')?.errors?.['min']">Max Items must be at least 1.</span>
+            <div class="p-field">
+                <p-iftalabel>
+                    <label for="openShortcut">Open menu Keyboard Shortcut:</label>
+                    <input type="text" pInputText id="openShortcut" formControlName="openShortcut" (focus)="onFocus($event)" (blur)="onBlur($event)"
+                            (keydown)="onKeyDown($event)" (keyup)="keyUp($event)" />
+                    <div *ngIf="configForm.get('openShortcut')?.invalid && configForm.get('openShortcut')?.touched">
+                        <span *ngIf="configForm.get('openShortcut')?.errors?.['required']">Keyboard Shortcut is required.</span>
+                    </div>
+                </p-iftalabel>
+            </div>
+            
+            <div class="p-field">
+                <p-iftalabel>
+                    <label for="bookmarkShortcut">Save Bookmark Keyboard Shortcut:</label>
+                    <input type="text" pInputText id="bookmarkShortcut" formControlName="bookmarkShortcut" (focus)="onFocus($event)" (blur)="onBlur($event)"
+                            (keydown)="onKeyDown($event)" (keyup)="keyUp($event)" />
+                    <div *ngIf="configForm.get('bookmarkShortcut')?.invalid && configForm.get('bookmarkShortcut')?.touched">
+                        <span *ngIf="configForm.get('bookmarkShortcut')?.errors?.['required']">Keyboard Shortcut is required.</span>
+                    </div>
+                </p-iftalabel>
+            </div>
+
+            <div class="p-field-checkbox">
+                <p-iftalabel>
+                    <p-checkbox id="startMinimized" formControlName="startMinimized" binary="true"></p-checkbox>
+                    <label for="startMinimized">Start Minimized</label>
+                </p-iftalabel>
+            </div>
+
+            <button pButton type="submit" label="Save Settings" [disabled]="!configForm.valid"></button>
         </div>
-    </div>
-
-    <div>
-        <label for="openShortcut">Open menu Keyboard Shortcut:</label>
-        <input type="text" id="openShortcut" formControlName="openShortcut" (focus)="onFocus($event)" (blur)="onBlur($event)"
-               (keydown)="onKeyDown($event)" (keyup)="keyUp($event)" />
-        <div *ngIf="configForm.get('openShortcut')?.invalid && configForm.get('openShortcut')?.touched">
-            <span *ngIf="configForm.get('openShortcut')?.errors?.['required']">Keyboard Shortcut is required.</span>
-        </div>
-    </div>
-    
-    <div>
-        <label for="bookmarkShortcut">Save Bookmark Keyboard Shortcut:</label>
-        <input type="text" id="bookmarkShortcut" formControlName="bookmarkShortcut" (focus)="onFocus($event)" (blur)="onBlur($event)"
-               (keydown)="onKeyDown($event)" (keyup)="keyUp($event)" />
-        <div *ngIf="configForm.get('bookmarkShortcut')?.invalid && configForm.get('bookmarkShortcut')?.touched">
-            <span *ngIf="configForm.get('bookmarkShortcut')?.errors?.['required']">Keyboard Shortcut is required.</span>
-        </div>
-    </div>
-
-
-    <div>
-        <label for="startMinimized">Start Minimized:</label>
-        <input type="checkbox" id="startMinimized" formControlName="startMinimized" />
-    </div>
-
-    <button type="submit" [disabled]="!configForm.valid">Save Settings</button>
-</form>
+    </form>
+</p-card>
 
 <app-bookmark-list></app-bookmark-list>

@@ -53,9 +53,6 @@ pub fn setup_tray_menu(app_handle: &AppHandle, update_tray: Option<bool>) {
     menu.append(&quit_item).unwrap();
 
     if let Some(_) = update_tray {
-        println!("Caiu no update");
-
-        dbg!(menu.items().unwrap()[0].id());
         // Update the tray menu
         if let Some(tray) = app_handle.tray_by_id("main") {
             let _ = tray.set_menu(Some(menu));
@@ -72,4 +69,14 @@ pub fn setup_tray_menu(app_handle: &AppHandle, update_tray: Option<bool>) {
             .build(app_handle)
             .unwrap();
     }
+
+    //// Sets up the event that prevents the window from closing and hides it instead
+    let window = app_handle.get_webview_window("main").unwrap();
+    let window_hider = window.clone();
+    window.on_window_event(move |event| {
+        if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+            api.prevent_close();
+            window_hider.hide().unwrap();
+        }
+    });
 }

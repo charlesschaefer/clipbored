@@ -7,14 +7,30 @@ import {
   Validators,
 } from '@angular/forms';
 import { invoke } from '@tauri-apps/api/core';
-import { every } from 'rxjs';
 import { AppConfig } from '../app-config.model';
+import { CardModule } from 'primeng/card';
+import { IftaLabelModule } from 'primeng/iftalabel';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { PanelModule } from 'primeng/panel';
+import { FieldsetModule } from 'primeng/fieldset';
+
 import { BookmarkListComponent } from '../bookmark-list/bookmark-list.component';
 
 @Component({
   selector: 'app-config-form',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, BookmarkListComponent],
+  imports: [
+    ReactiveFormsModule, 
+    CommonModule, 
+    BookmarkListComponent,
+    CardModule,
+    IftaLabelModule,
+    InputTextModule,
+    InputNumberModule,
+    PanelModule,
+    FieldsetModule,
+  ],
   templateUrl: './config-form.component.html',
   styleUrl: './config-form.component.css',
 })

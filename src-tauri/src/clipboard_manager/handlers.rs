@@ -19,7 +19,6 @@ pub fn handle_tray_event(app: &AppHandle, event: MenuEvent) {
             if let Ok(index) = item_id[5..].parse::<usize>() {
                 let items = history.get_items();
                 if let Some(text) = items.get(index) {
-                    println!("Text we got: {:?}", text);
                     clipboard.write_text::<String>(text.clone()).unwrap();
                     let _ = paste_text();
                 }
@@ -50,18 +49,15 @@ pub fn paste_text() -> Result<(), rdev::SimulateError> {
 
 
 pub fn open_shortcut_handler<T, U>(app: &'_ AppHandle, _: &'_ T, _: U) {
-    println!("Chegoun no open");
     app.get_webview_window("main").unwrap().show().unwrap();
 }
 
 pub fn bookmark_shortcut_handler<T, U>(app: &'_ AppHandle, _: &'_ T, _: U) {
-    println!("Chegoun no bookmark");
     let history = app.state::<ClipboardHistory>();
     let items = history.get_items();
     if let Some(last_item) = items.first() {
         let bookmarks = app.state::<Arc<Mutex<Vec<Bookmark>>>>();
         let bm = bookmarks.lock().unwrap();
-        println!("bookmark: {:?}, {:?}", bm.clone(), &last_item);
         // Check if item is already bookmarked
         if let Some(index) = bm.iter().position(|b| b.content == *last_item) {
             let _ = crate::commands::remove_bookmark(app.to_owned(), index);

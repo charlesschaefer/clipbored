@@ -19,7 +19,7 @@ fn load_file_configs(app: &App) -> (AppConfig, Vec<Bookmark>) {
         .app_local_data_dir()
         .expect("Failed to get data directory"); // Moved inside the function
     let config_path = save_path.join("config.json");
-    dbg!("Config path: ", &config_path);
+
     let app_config = match fs::read_to_string(&config_path) {
         Ok(contents) => {
             serde_json::from_str(&contents).unwrap_or_else(|_| {
@@ -70,8 +70,6 @@ pub fn run() {
             let autostart_manager = app.autolaunch();
             // Enable autostart
             let _ = autostart_manager.enable();
-            // Check enable state
-            println!("registered for autostart? {}", autostart_manager.is_enabled().unwrap());
 
             //// sets up the managed state variables
             use crate::clipboard_manager::history::Handler;

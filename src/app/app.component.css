@@ -17,13 +17,29 @@
   -webkit-text-size-adjust: 100%;
 }
 
-.container {
+::ng-deep header {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  align-items: center;
+}
+
+.main {
   margin: 0;
-  padding-top: 10vh;
+  padding-top: 5vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  text-align: center;
+  background-color: #ffffff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.main-container {
+  width: 50%;
+  display: flex;
+  justify-content: center;
 }
 
 .logo {

@@ -13,8 +13,8 @@
     "windows": [
       {
         "title": "tauri-clipboard",
-        "width": 800,
-        "height": 600
+        "width": 850,
+        "height": 900
       }
     ],
     "security": {

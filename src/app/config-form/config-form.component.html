@@ -12,19 +12,22 @@
 
     <div>
         <label for="openShortcut">Open menu Keyboard Shortcut:</label>
-        <input type="text" id="openShortcut" formControlName="openShortcut" />
+        <input type="text" id="openShortcut" formControlName="openShortcut" (focus)="onFocus($event)" (blur)="onBlur($event)"
+               (keydown)="onKeyDown($event)" (keyup)="keyUp($event)" />
         <div *ngIf="configForm.get('openShortcut')?.invalid && configForm.get('openShortcut')?.touched">
             <span *ngIf="configForm.get('openShortcut')?.errors?.['required']">Keyboard Shortcut is required.</span>
         </div>
     </div>
-
+    
     <div>
         <label for="bookmarkShortcut">Save Bookmark Keyboard Shortcut:</label>
-        <input type="text" id="bookmarkShortcut" formControlName="bookmarkShortcut" />
+        <input type="text" id="bookmarkShortcut" formControlName="bookmarkShortcut" (focus)="onFocus($event)" (blur)="onBlur($event)"
+               (keydown)="onKeyDown($event)" (keyup)="keyUp($event)" />
         <div *ngIf="configForm.get('bookmarkShortcut')?.invalid && configForm.get('bookmarkShortcut')?.touched">
             <span *ngIf="configForm.get('bookmarkShortcut')?.errors?.['required']">Keyboard Shortcut is required.</span>
         </div>
     </div>
+
 
     <div>
         <label for="startMinimized">Start Minimized:</label>

@@ -1,11 +1,10 @@
 extern crate clipboard_master;
-use clipboard_master::{ClipboardHandler, CallbackResult};
+use clipboard_master::{CallbackResult, ClipboardHandler};
 
-use tauri_plugin_clipboard_manager::ClipboardExt;
-use tauri::{AppHandle, Manager};
 use std::collections::VecDeque;
 use std::sync::{Arc, Mutex};
-
+use tauri::{AppHandle, Manager};
+use tauri_plugin_clipboard_manager::ClipboardExt;
 
 pub struct ClipboardHistory(Mutex<VecDeque<String>>);
 
@@ -33,20 +32,18 @@ impl ClipboardHistory {
 
 #[derive(Debug)]
 pub struct Handler {
-    app: Arc<Mutex<AppHandle>>
+    app: Arc<Mutex<AppHandle>>,
 }
 
 impl Handler {
-    pub fn new(app: Arc<Mutex<AppHandle>>) -> Self{
-        Handler {
-            app: app
-        }
+    pub fn new(app: Arc<Mutex<AppHandle>>) -> Self {
+        Handler { app: app }
     }
 }
 
 impl ClipboardHandler for Handler {
     fn on_clipboard_change(&mut self) -> CallbackResult {
-        let mut app = self.app.lock().unwrap();
+        let app = self.app.lock().unwrap();
         println!("Clipboard change happened!");
         let clipboard = app.clipboard();
         let history = app.state::<ClipboardHistory>();
@@ -57,7 +54,6 @@ impl ClipboardHandler for Handler {
             use crate::clipboard_manager::tray::setup_tray_menu;
 
             setup_tray_menu(&app, Some(true));
-
         }
         CallbackResult::Next
     }

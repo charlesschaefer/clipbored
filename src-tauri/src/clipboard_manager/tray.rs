@@ -1,8 +1,10 @@
-
-use tauri::{menu::{Menu, MenuItem, MenuItemBuilder}, tray::TrayIconBuilder, AppHandle, Manager};
+use tauri::{
+    menu::{Menu, MenuItem, MenuItemBuilder},
+    tray::TrayIconBuilder,
+    AppHandle, Manager,
+};
 
 use super::{handlers::handle_tray_event, history::ClipboardHistory};
-
 
 pub fn create_tray_menu(history: &Vec<String>) -> Vec<(String, String)> {
     let mut menu_items = Vec::new();
@@ -21,7 +23,6 @@ pub fn create_tray_menu(history: &Vec<String>) -> Vec<(String, String)> {
     menu_items
 }
 
-
 pub fn setup_tray_menu(app_handle: &AppHandle, update_tray: Option<bool>) {
     let menu = Menu::new(app_handle).unwrap();
     let items: Vec<String>;
@@ -30,13 +31,17 @@ pub fn setup_tray_menu(app_handle: &AppHandle, update_tray: Option<bool>) {
     } else {
         items = Vec::new();
     }
-    
+
     // Create initial empty menu
     let menu_items = create_tray_menu(&items);
-    
+
     for (id, text) in menu_items {
         //let item = MenuItem::with_id(app_handle, &id, text, true, None::<&str>)?;
-        let item = MenuItemBuilder::new(text).enabled(true).id(id).build(app_handle).unwrap();
+        let item = MenuItemBuilder::new(text)
+            .enabled(true)
+            .id(id)
+            .build(app_handle)
+            .unwrap();
         menu.append(&item).unwrap();
     }
 
@@ -49,7 +54,7 @@ pub fn setup_tray_menu(app_handle: &AppHandle, update_tray: Option<bool>) {
 
     if let Some(_) = update_tray {
         println!("Caiu no update");
-        
+
         dbg!(menu.items().unwrap()[0].id());
         // Update the tray menu
         if let Some(tray) = app_handle.tray_by_id("main") {
@@ -64,6 +69,7 @@ pub fn setup_tray_menu(app_handle: &AppHandle, update_tray: Option<bool>) {
                 handle_tray_event(app_handle, event);
             })
             .icon(app_handle.default_window_icon().unwrap().clone())
-            .build(app_handle).unwrap();
+            .build(app_handle)
+            .unwrap();
     }
 }

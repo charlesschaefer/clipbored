@@ -1,12 +1,10 @@
+use std::convert::Infallible;
+
 use tauri::{
     menu::MenuEvent, AppHandle, Manager
 };
 
 use tauri_plugin_clipboard_manager::ClipboardExt;
-use clipboard_master::Master;
-use crate::clipboard_manager::history::Handler;
-
-
 
 use super::history::ClipboardHistory;
 
@@ -17,14 +15,15 @@ pub fn handle_tray_event(
     let clipboard = app.clipboard();
 
     let history = app.state::<ClipboardHistory>();
-    dbg!("Vamos tratar os eventos de trayicon");
     match event.id.0.as_str() {
                 "quit" => std::process::exit(0),
                 item_id if item_id.starts_with("item_") => {
                     if let Ok(index) = item_id[5..].parse::<usize>() {
                         let items = history.get_items();
                         if let Some(text) = items.get(index) {
+                            println!("Text we got: {:?}", text);
                             clipboard.write_text::<String>(text.clone()).unwrap();
+                            paste_text();
                         }
                     }
                 }
@@ -33,9 +32,22 @@ pub fn handle_tray_event(
 }
 
 
-pub fn setup_clipboard_listener(app: &mut tauri::App) {
-    let mut master = Master::new(Handler::new(app.handle()));
-    master.run().expect("run monitor");
+pub fn paste_text() -> Result<(), rdev::SimulateError> {
+   use rdev::{simulate, EventType, Key};
+
+    // Simulate pressing CTRL
+    simulate(&EventType::KeyPress(Key::ControlLeft))?;
+    // Simulate pressing SHIFT
+    simulate(&EventType::KeyPress(Key::ShiftLeft))?;
+    // Simulate pressing V
+    simulate(&EventType::KeyPress(Key::KeyV))?;
+    // Simulate releasing V
+    simulate(&EventType::KeyRelease(Key::KeyV))?;
+    // Simulate releasing SHIFT
+    simulate(&EventType::KeyRelease(Key::ShiftLeft))?;
+    // Simulate releasing CTRL
+    simulate(&EventType::KeyRelease(Key::ControlLeft))?;
+
+    Ok(())
+
 }
-
-

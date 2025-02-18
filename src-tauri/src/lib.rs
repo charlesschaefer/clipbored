@@ -1,23 +1,31 @@
 mod clipboard_manager;
 
+use std::sync::{Arc, Mutex};
+
 use clipboard_manager::{
-    handlers::setup_clipboard_listener,
     history::ClipboardHistory,
     tray::setup_tray_menu,
 };
-use tauri::Manager;
+use tauri::{App, Manager};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_clipboard_manager::init())
-        .setup(move |app| {
+        .setup(|app: &mut App| {
+            use clipboard_master::Master;
+            use crate::clipboard_manager::history::Handler;
+
             app.manage(ClipboardHistory::new());
             
             setup_tray_menu(&app.handle(), None);
 
-            // Set up clipboard listener
-            setup_clipboard_listener(app);
+            let app_handle = Arc::new(Mutex::new(app.handle().to_owned()));
+            std::thread::spawn(move || {
+                // Set up clipboard listener
+                let mut master = Master::new(Handler::new(app_handle));
+                master.run().expect("run monitor");
+            });
 
             Ok(())
         })

@@ -1,7 +1,5 @@
 use tauri::{
-    menu::{CheckMenuItemBuilder, Menu, MenuItem},
-    tray::TrayIconBuilder,
-    AppHandle, Manager,
+    image::Image, menu::{CheckMenuItemBuilder, IconMenuItem, Menu, MenuItem}, tray::TrayIconBuilder, AppHandle, Manager
 };
 
 use super::{handlers::{handle_tray_menu_event, handle_tray_icon_event}, history::ClipboardHistory};
@@ -29,10 +27,27 @@ pub fn setup_tray_menu(app_handle: &AppHandle, update_tray: Option<bool>) {
         menu.append(&item).unwrap();
     }
 
-    
+    // let image: Image<'_>;
+    // let asset = match app_handle.asset_resolver().get("icon.png".to_string()) {
+    //     Some(img) => {
+    //         dbg!("Deu bom na imagem");
+    //         let mut bytes: [u8] = [];
+    //         bytes.copy_from_slice(img.bytes());
+    //         let mut b2 = bytes.clone();
+    //         b2.copy_from_slice(bytes);
+    //         image = Image::new(b2, 136, 136);
+    //     },
+    //     _ => {
+    //         dbg!("deu ruim demais");
+    //         image = Image::new(&[0u8;0], 0, 0);
+    //     }
+    // };
+    // //let image = Image::new(&asset, 136, 136);
+    // let test = IconMenuItem::with_id(app_handle, "img", "Image", true, Some(image), None::<&str>).unwrap();
     // Add separator and quit
     let quit_item = MenuItem::with_id(app_handle, "quit", "Quit", true, None::<&str>).unwrap();
     let show_item = MenuItem::with_id(app_handle, "show", "Settings", true, None::<&str>).unwrap();
+    // menu.append(&test).unwrap();
     menu.append(&show_item).unwrap();
     menu.append(&quit_item).unwrap();
 

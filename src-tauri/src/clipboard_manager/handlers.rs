@@ -11,7 +11,7 @@ pub fn handle_tray_menu_event(app: &AppHandle, event: MenuEvent) {
 
     let history = app.state::<ClipboardHistory>();
     match event.id.0.as_str() {
-        //"quit" => std::process::exit(0),
+        "quit" => std::process::exit(0),
         "show" => app.get_webview_window("main").unwrap().show().unwrap(),
         item_id if item_id.starts_with("item_") => {
             if let Ok(index) = item_id[5..].parse::<usize>() {
@@ -35,22 +35,27 @@ pub fn paste_text() -> Result<(), rdev::SimulateError> {
         Ok(())
     };
 
-    // try to go back to the background window
-    send(&EventType::KeyPress(Key::Alt))?;
-    send(&EventType::KeyPress(Key::Escape))?;
+    #[cfg(windows)] {
+        // try to go back to the background window
+        send(&EventType::KeyPress(Key::Alt))?;
+        send(&EventType::KeyPress(Key::Escape))?;
 
-    send(&EventType::KeyRelease(Key::Escape))?;
-    send(&EventType::KeyRelease(Key::Alt))?;
-
+        send(&EventType::KeyRelease(Key::Escape))?;
+        send(&EventType::KeyRelease(Key::Alt))?;
+    }
 
     // try pasting the text
-    send(&EventType::KeyPress(Key::ShiftRight))?;
+    #[cfg(target_os = "linux")] {
+        send(&EventType::KeyPress(Key::ShiftRight))?;
+    }
     send(&EventType::KeyPress(Key::ControlLeft))?;
     send(&EventType::KeyPress(Key::KeyV))?;
 
     send(&EventType::KeyRelease(Key::KeyV))?;
     send(&EventType::KeyRelease(Key::ControlLeft))?;
-    send(&EventType::KeyRelease(Key::ShiftRight))?;
+    #[cfg(target_os = "linux")] {
+        send(&EventType::KeyRelease(Key::ShiftRight))?;
+    }
 
     Ok(())
 }

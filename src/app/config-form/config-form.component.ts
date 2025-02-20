@@ -16,8 +16,10 @@ import { PanelModule } from 'primeng/panel';
 import { FieldsetModule } from 'primeng/fieldset';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 import { BookmarkListComponent } from '../bookmark-list/bookmark-list.component';
+import { ClipboardListComponent } from "../clipboard-list/clipboard-list.component";
 
 @Component({
     selector: 'app-config-form',
@@ -34,6 +36,8 @@ import { BookmarkListComponent } from '../bookmark-list/bookmark-list.component'
         FieldsetModule,
         CheckboxModule,
         ButtonModule,
+        InputSwitchModule,
+        ClipboardListComponent
     ],
     templateUrl: './config-form.component.html',
     styleUrl: './config-form.component.css',
@@ -47,6 +51,8 @@ export class ConfigFormComponent {
         startMinimized: false
     });
     tempShortcutValue = '';
+
+    isSettingsOpen = false;
 
     MODIFIERS = ['Ctrl', 'Shift', 'Alt', 'Super'];
     SUPER_MODIFIERS = ['Cmd', 'CmdLeft', 'CmdRight', 'Super', 'Meta', 'MetaLeft', 'MetaRight'];

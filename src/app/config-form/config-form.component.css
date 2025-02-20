@@ -1,6 +1,13 @@
-.config-form-card {
-    background: var(--primary-color);
+
+::ng-deep .config-form-card .p-card .p-card-body {
+    background: var(--p-primary-color);
+    color: var(--p-primary-contrast-color);
+    width: 50vw;
+    display: flex;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
+
 
 ::ng-deep .p-panel {
     width: 50em;
@@ -12,19 +19,15 @@
 }
 
 .p-field {
-    margin-bottom: 8px;
+    padding: 20px
 }
 
-.p-field-checkbox {
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-}
-
-label {
-    margin-bottom: 2px;
-    font-weight: bold;
-    color: #333;
+::ng-deep .keyboard-shortcuts .p-fieldset, 
+::ng-deep .keyboard-shortcuts .p-fieldset legend, 
+::ng-deep .p-field {
+    padding: 0;
+    background-color: var(--p-primary-color);
+    color: var(--p-primary-contrast-color);
 }
 
 button {
@@ -34,20 +37,4 @@ button {
 span {
     color: red;
     font-size: 0.75em;
-}
-
-hr.separator {
-    margin: 15px 0;
-    border: 0;
-    border-top: 1px solid #ddd;
-    width: 80%;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.p-card,
-.p-panel {
-    width: 50%;
-    margin: 10px auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

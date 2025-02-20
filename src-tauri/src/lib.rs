@@ -1,7 +1,7 @@
 mod clipboard_manager;
 mod commands;
 
-use std::{str::FromStr, sync::{Arc, Mutex}};
+use std::{str::FromStr, sync::{Arc, RwLock}};
 use tauri_plugin_autostart::{MacosLauncher, ManagerExt};
 
 use clipboard_manager::{history::ClipboardHistory, tray::setup_tray_menu};
@@ -66,10 +66,19 @@ pub fn run() {
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_global_shortcut::Builder::new().build()) // Add the global shortcut plugin
         .setup(|app: &mut App| {
+            // Load configs and manage state
+            let (app_config, bookmarks) = load_file_configs(app);
+            let config = app_config.clone();
+            app.manage(Arc::new(RwLock::new(app_config)));
+            app.manage(Arc::new(RwLock::new(bookmarks)));
+
             //// sets up the autostart function
             let autostart_manager = app.autolaunch();
-            // Enable autostart
-            let _ = autostart_manager.enable();
+            
+            if !autostart_manager.is_enabled().unwrap() {
+                // Enable autostart
+                let _ = autostart_manager.enable();
+            }
 
             //// sets up the managed state variables
             use crate::clipboard_manager::history::Handler;
@@ -77,17 +86,11 @@ pub fn run() {
 
             app.manage(ClipboardHistory::new());
 
-            // Load configs and manage state
-            let (app_config, bookmarks) = load_file_configs(app);
-            let config = app_config.clone();
-            app.manage(Arc::new(Mutex::new(app_config)));
-            app.manage(Arc::new(Mutex::new(bookmarks)));
-
             //// Sets up the tray menu
             setup_tray_menu(&app.handle(), None);
 
             //// Start a thread with the clipboard listener
-            let app_handle = Arc::new(Mutex::new(app.handle().to_owned()));
+            let app_handle = Arc::new(RwLock::new(app.handle().to_owned()));
             std::thread::spawn(move || {
                 // Set up clipboard listener
                 let mut master = Master::new(Handler::new(app_handle));
@@ -96,8 +99,11 @@ pub fn run() {
 
 
             let global_shortcut_manager = app.global_shortcut();
-            let open_shortcut = Shortcut::from_str(config.open_shortcut.as_str()).unwrap();
-            let bookmark_shortcut = Shortcut::from_str(&config.bookmark_shortcut.as_str()).unwrap();
+            let open_key = config.open_shortcut.as_str().replace("Meta", "Super");
+            let bookmark_key = config.bookmark_shortcut.as_str().replace("Meta", "Super");
+            
+            let open_shortcut = Shortcut::from_str(&open_key).unwrap();
+            let bookmark_shortcut = Shortcut::from_str(&bookmark_key).unwrap();
 
             global_shortcut_manager.on_shortcut(open_shortcut, clipboard_manager::handlers::open_shortcut_handler).unwrap();
             global_shortcut_manager.on_shortcut(bookmark_shortcut, clipboard_manager::handlers::bookmark_shortcut_handler).unwrap();
@@ -112,7 +118,6 @@ pub fn run() {
 
             Ok(())
         })
-        //.plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .plugin(tauri_plugin_clipboard_manager::init())
         .invoke_handler(tauri::generate_handler!(
             commands::remove_bookmark,
@@ -122,7 +127,6 @@ pub fn run() {
             commands::get_config,
             commands::hide_window
         ))
-        //.invoke_handler(tauri::generate_handler![greet])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

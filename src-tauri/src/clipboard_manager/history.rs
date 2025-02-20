@@ -2,19 +2,19 @@ extern crate clipboard_master;
 use clipboard_master::{CallbackResult, ClipboardHandler};
 
 use std::collections::VecDeque;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, RwLock};
 use tauri::{AppHandle, Manager};
 use tauri_plugin_clipboard_manager::ClipboardExt;
 
-pub struct ClipboardHistory(Mutex<VecDeque<String>>);
+pub struct ClipboardHistory(RwLock<VecDeque<String>>);
 
 impl ClipboardHistory {
     pub fn new() -> Self {
-        ClipboardHistory(Mutex::new(VecDeque::with_capacity(10)))
+        ClipboardHistory(RwLock::new(VecDeque::with_capacity(10)))
     }
 
     pub fn add_item(&self, item: String) {
-        let mut history = self.0.lock().unwrap();
+        let mut history = self.0.write().unwrap();
         // Remove item if it already exists to avoid duplicates
         history.retain(|x| x != &item);
         // Add new item to front
@@ -26,24 +26,24 @@ impl ClipboardHistory {
     }
 
     pub fn get_items(&self) -> Vec<String> {
-        self.0.lock().unwrap().iter().cloned().collect()
+        self.0.read().unwrap().iter().cloned().collect()
     }
 }
 
 #[derive(Debug)]
 pub struct Handler {
-    app: Arc<Mutex<AppHandle>>,
+    app: Arc<RwLock<AppHandle>>,
 }
 
 impl Handler {
-    pub fn new(app: Arc<Mutex<AppHandle>>) -> Self {
+    pub fn new(app: Arc<RwLock<AppHandle>>) -> Self {
         Handler { app: app }
     }
 }
 
 impl ClipboardHandler for Handler {
     fn on_clipboard_change(&mut self) -> CallbackResult {
-        let app = self.app.lock().unwrap();
+        let app = self.app.read().unwrap();
         let clipboard = app.clipboard();
         let history = app.state::<ClipboardHistory>();
 

@@ -9,12 +9,25 @@ use super::history::ClipboardHistory;
 pub fn handle_tray_menu_event(app: &AppHandle, event: MenuEvent) {
     let clipboard = app.clipboard();
 
-    let history_reader = app.state::<Arc<RwLock<ClipboardHistory>>>();
-    let history = history_reader.read().unwrap();
+    
     match event.id.0.as_str() {
         "quit" => std::process::exit(0),
         "show" => app.get_webview_window("main").unwrap().show().unwrap(),
+        item_id if item_id.starts_with("item_bm_") => {
+            dbg!("Vem do bookmark");
+            let bookmark_reader = app.state::<Arc<RwLock<Vec<Bookmark>>>>();
+            let bookmarks = bookmark_reader.read().unwrap();
+            if let Ok(index) = item_id[8..].parse::<usize>() {
+                if let Some(text) = bookmarks.get(index) {
+                    clipboard.write_text::<String>(text.clone().content).unwrap();
+                    let _ = paste_text();
+                }
+            }
+        },
         item_id if item_id.starts_with("item_") => {
+            dbg!("Vem do clipboard");
+            let history_reader = app.state::<Arc<RwLock<ClipboardHistory>>>();
+            let history = history_reader.read().unwrap();
             if let Ok(index) = item_id[5..].parse::<usize>() {
                 let items = history.get_items();
                 if let Some(text) = items.get(index) {
@@ -135,7 +148,7 @@ pub fn bookmark_shortcut_handler<T, U>(app: &'_ AppHandle, _: &'_ T, _: U) {
     let history_reader = app.state::<Arc<RwLock<ClipboardHistory>>>();
     let history = history_reader.read().unwrap();
     let items = history.get_items();
-dbg!("Fomos?");
+
     drop(history);
     if let Some(last_item) = items.first() {
         let bookmarks = app.state::<Arc<RwLock<Vec<Bookmark>>>>().inner();

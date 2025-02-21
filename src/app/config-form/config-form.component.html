@@ -1,50 +1,52 @@
+<p-toast></p-toast>
 <!-- Settings Panel -->
-<p-panel [toggleable]="true" [collapsed]="!isSettingsOpen">
-  <ng-template pTemplate="header">
-    <div class="flex align-items-center gap-2">
-      <i class="pi pi-cog"></i>
-      <span class="text-xl font-semibold">App Configuration</span>
+<div class="mt-4 w-full flex justify-content-center config-form">
+  <p-panel [toggleable]="true" [collapsed]="!isSettingsOpen">
+    <ng-template pTemplate="header">
+      <div class="flex align-items-center gap-2">
+        <i class="pi pi-cog"></i>
+        <span class="text-xl font-semibold">App Configuration</span>
+      </div>
+    </ng-template>
+
+    <div class="p-fluid grid mt-7 w-10">
+      <form [formGroup]="configForm" (ngSubmit)="saveConfig()" class="config-form p-fluid grid">
+        <div class="field col-12 md:col-6">
+          <label for="maxItems" class="block mb-2">Maximum Items</label>
+          <p-inputNumber id="maxItems" formControlName="maxItems" [min]="1" />
+          <div *ngIf="configForm.get('maxItems')?.invalid && configForm.get('maxItems')?.touched">
+            <span *ngIf="configForm.get('maxItems')?.errors?.['required']">Max Items is required.</span>
+            <span *ngIf="configForm.get('maxItems')?.errors?.['min']">Max Items must be at least 1.</span>
+          </div>
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="openShortcut" class="block mb-2">Open Shortcut</label>
+          <input type="text" pInputText id="openShortcut" formControlName="openShortcut" (focus)="onFocus($event)" (blur)="onBlur($event)"
+                 (keydown)="onKeyDown($event)" (keyup)="keyUp($event)" />
+          <div *ngIf="configForm.get('openShortcut')?.invalid && configForm.get('openShortcut')?.touched">
+            <span *ngIf="configForm.get('openShortcut')?.errors?.['required']">Keyboard Shortcut is required.</span>
+          </div>
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="bookmarkShortcut" class="block mb-2">Bookmark Shortcut</label>
+          <input type="text" pInputText id="bookmarkShortcut" formControlName="bookmarkShortcut" (focus)="onFocus($event)" (blur)="onBlur($event)"
+                 (keydown)="onKeyDown($event)" (keyup)="keyUp($event)" />
+          <div *ngIf="configForm.get('bookmarkShortcut')?.invalid && configForm.get('bookmarkShortcut')?.touched">
+            <span *ngIf="configForm.get('bookmarkShortcut')?.errors?.['required']">Keyboard Shortcut is
+              required.</span>
+          </div>
+        </div>
+        <div class="field col-12 md:col-6 flex align-items-center gap-3">
+          <label for="startMinimized" class="block">Start Minimized</label>
+          <p-inputSwitch inputId="startMinimized" formControlName="startMinimized"></p-inputSwitch>
+        </div>
+        <div class="col-12">
+          <button pButton label="Save Settings" [disabled]="!configForm.valid" class="w-full" type="submit"></button>
+        </div>
+      </form>
     </div>
-  </ng-template>
-
-  <div class="p-fluid grid">
-    <form [formGroup]="configForm" (ngSubmit)="saveConfig()" class="config-form p-fluid grid">
-      <div class="field col-12 md:col-6">
-        <label for="maxItems" class="block mb-2">Maximum Items</label>
-        <p-inputNumber id="maxItems" formControlName="maxItems" [min]="1" />
-        <div *ngIf="configForm.get('maxItems')?.invalid && configForm.get('maxItems')?.touched">
-          <span *ngIf="configForm.get('maxItems')?.errors?.['required']">Max Items is required.</span>
-          <span *ngIf="configForm.get('maxItems')?.errors?.['min']">Max Items must be at least 1.</span>
-        </div>
-      </div>
-      <div class="field col-12 md:col-6">
-        <label for="openShortcut" class="block mb-2">Open Shortcut</label>
-        <input type="text" pInputText id="openShortcut" formControlName="openShortcut" (focus)="onFocus($event)"
-          (blur)="onBlur($event)" (keydown)="onKeyDown($event)" (keyup)="keyUp($event)" />
-        <div *ngIf="configForm.get('openShortcut')?.invalid && configForm.get('openShortcut')?.touched">
-          <span *ngIf="configForm.get('openShortcut')?.errors?.['required']">Keyboard Shortcut is required.</span>
-        </div>
-      </div>
-      <div class="field col-12 md:col-6">
-        <label for="bookmarkShortcut" class="block mb-2">Bookmark Shortcut</label>
-        <input type="text" pInputText id="bookmarkShortcut" formControlName="bookmarkShortcut" (focus)="onFocus($event)"
-          (blur)="onBlur($event)" (keydown)="onKeyDown($event)" (keyup)="keyUp($event)" />
-        <div *ngIf="configForm.get('bookmarkShortcut')?.invalid && configForm.get('bookmarkShortcut')?.touched">
-          <span *ngIf="configForm.get('bookmarkShortcut')?.errors?.['required']">Keyboard Shortcut is
-            required.</span>
-        </div>
-      </div>
-      <div class="field col-12 md:col-6 flex align-items-center gap-3">
-        <label for="startMinimized" class="block">Start Minimized</label>
-        <p-inputSwitch inputId="startMinimized" formControlName="startMinimized"></p-inputSwitch>
-      </div>
-      <div class="col-12">
-        <button pButton label="Save Settings" [disabled]="!configForm.valid" class="w-full" type="submit"></button>
-      </div>
-    </form>
-  </div>
-</p-panel>
-
+  </p-panel>
+</div>
 
 <!-- <p-card header="App Configuration" class="config-form-card">
   <form [formGroup]="configForm" (ngSubmit)="saveConfig()" class="config-form">

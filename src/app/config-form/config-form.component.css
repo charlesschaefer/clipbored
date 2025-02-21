@@ -39,3 +39,7 @@ span {
     font-size: 0.75em;
 }
  */
+::ng-deep .config-form p-panel {
+    display: flex;
+    width: 80%;
+}

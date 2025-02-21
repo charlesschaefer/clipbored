@@ -7,17 +7,19 @@ import {
     Validators,
 } from '@angular/forms';
 import { invoke } from '@tauri-apps/api/core';
-import { AppConfig } from '../app-config.model';
-import { CardModule } from 'primeng/card';
-import { IftaLabelModule } from 'primeng/iftalabel';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { PanelModule } from 'primeng/panel';
-import { FieldsetModule } from 'primeng/fieldset';
-import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { CheckboxModule } from 'primeng/checkbox';
+import { FieldsetModule } from 'primeng/fieldset';
+import { IftaLabelModule } from 'primeng/iftalabel';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { InputTextModule } from 'primeng/inputtext';
+import { PanelModule } from 'primeng/panel';
+import { ToastModule } from 'primeng/toast';
+import { AppConfig } from '../app-config.model';
 
+import { MessageService } from 'primeng/api';
 import { BookmarkListComponent } from '../bookmark-list/bookmark-list.component';
 import { ClipboardListComponent } from "../clipboard-list/clipboard-list.component";
 
@@ -37,8 +39,10 @@ import { ClipboardListComponent } from "../clipboard-list/clipboard-list.compone
         CheckboxModule,
         ButtonModule,
         InputSwitchModule,
-        ClipboardListComponent
+        ClipboardListComponent,
+        ToastModule
     ],
+    providers: [MessageService],
     templateUrl: './config-form.component.html',
     styleUrl: './config-form.component.css',
 })
@@ -62,7 +66,7 @@ export class ConfigFormComponent {
         'ArrowLeft', 'ArrowRight', 'AltRight', 'ContextMenu'
     ];
 
-    constructor(private fb: FormBuilder) {
+    constructor(private fb: FormBuilder, private messageService: MessageService) {
         this.configForm = this.fb.group({
             maxItems: [10, [Validators.required, Validators.min(1)]],
             openShortcut: ['Ctrl+Shift+V', Validators.required],
@@ -174,6 +178,14 @@ export class ConfigFormComponent {
             invoke('set_config', { config: this.config() }).then(() => {
                 console.log('Settings Saved');
                 invoke('hide_window');
+            }).catch((error) => {
+                console.log('Settings Saved', error);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: `Shortcut already registered: ${error}`,
+                    life: 10000
+                });
             });
         } else {
             console.log('Form is invalid');

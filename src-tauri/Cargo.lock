@@ -554,6 +554,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "clipbored"
+version = "0.1.0"
+dependencies = [
+ "clipboard-master",
+ "rdev",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-autostart",
+ "tauri-plugin-clipboard-manager",
+ "tauri-plugin-global-shortcut",
+ "tauri-plugin-opener",
+ "tokio",
+]
+
+[[package]]
 name = "cocoa"
 version = "0.22.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4053,23 +4070,6 @@ dependencies = [
  "tauri-winres",
  "toml 0.8.20",
  "walkdir",
-]
-
-[[package]]
-name = "tauri-clipboard"
-version = "0.1.0"
-dependencies = [
- "clipboard-master",
- "rdev",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "tauri-plugin-autostart",
- "tauri-plugin-clipboard-manager",
- "tauri-plugin-global-shortcut",
- "tauri-plugin-opener",
- "tokio",
 ]
 
 [[package]]

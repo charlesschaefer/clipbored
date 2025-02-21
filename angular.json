@@ -6,7 +6,7 @@
     "analytics": false
   },
   "projects": {
-    "tauri-clipboard": {
+    "clipbored": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/tauri-clipboard",
+            "outputPath": "dist/clipbored",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],
@@ -63,10 +63,10 @@
           },
           "configurations": {
             "production": {
-              "buildTarget": "tauri-clipboard:build:production"
+              "buildTarget": "clipbored:build:production"
             },
             "development": {
-              "buildTarget": "tauri-clipboard:build:development"
+              "buildTarget": "clipbored:build:development"
             }
           },
           "defaultConfiguration": "development"

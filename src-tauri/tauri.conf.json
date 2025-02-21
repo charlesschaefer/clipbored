@@ -1,18 +1,18 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "tauri-clipboard",
+  "productName": "clipbored",
   "version": "0.1.0",
-  "identifier": "com.tauri-clipboard.app",
+  "identifier": "com.clipbored.app",
   "build": {
     "beforeDevCommand": "npm run start",
     "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "npm run build",
-    "frontendDist": "../dist/tauri-clipboard/browser"
+    "frontendDist": "../dist/clipbored/browser"
   },
   "app": {
     "windows": [
       {
-        "title": "tauri-clipboard",
+        "title": "Clipbored",
         "width": 850,
         "height": 900
       }

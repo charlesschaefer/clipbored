@@ -1,4 +1,4 @@
-use std::{str::FromStr, sync::{Arc, Mutex}};
+use std::{str::FromStr, sync::{Arc, RwLock}};
 use tauri::{menu::MenuEvent, tray::{MouseButton, TrayIcon, TrayIconEvent}, AppHandle, Manager};
 use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut}; // Removed APP_CONFIG and BOOKMARKS
 use tauri_plugin_clipboard_manager::ClipboardExt;
@@ -9,7 +9,8 @@ use super::history::ClipboardHistory;
 pub fn handle_tray_menu_event(app: &AppHandle, event: MenuEvent) {
     let clipboard = app.clipboard();
 
-    let history = app.state::<ClipboardHistory>();
+    let history_reader = app.state::<Arc<RwLock<ClipboardHistory>>>();
+    let history = history_reader.read().unwrap();
     match event.id.0.as_str() {
         "quit" => std::process::exit(0),
         "show" => app.get_webview_window("main").unwrap().show().unwrap(),
@@ -73,37 +74,39 @@ pub fn handle_tray_icon_event(tray_icon: &TrayIcon, event: tauri::tray::TrayIcon
             MouseButton::Left => {
                 dbg!("system tray received a left click");
                 let window = tray_icon.app_handle().get_webview_window("main").unwrap();
-                window.show().unwrap();
+                let menu = tray_icon.app_handle().menu().unwrap();
+                window.popup_menu(&menu).unwrap();
+                //window.show().unwrap();
             }
             _ => {
                 dbg!("system tray received a middle or right click");
             }
         },
-        TrayIconEvent::Enter { id: _, .. } => {
-            dbg!("system tray received a mouse enter ");
-            let window = tray_icon.app_handle().get_webview_window("main").unwrap();
-            let menu = tray_icon.app_handle().menu();
+        // TrayIconEvent::Enter { id: _, .. } => {
+        //     dbg!("system tray received a mouse enter ");
+        //     let window = tray_icon.app_handle().get_webview_window("main").unwrap();
+        //     let menu = tray_icon.app_handle().menu();
 
-            match menu {
-                Some(menu) => {
-                    dbg!("Tem um menu no tray.app_handle()");
-                    window.popup_menu(&menu).unwrap();
-                },
-                None => {
-                    dbg!("Não tem um menu no tray.app_handle()");
-                }
-            }
-        },
-        TrayIconEvent::Leave { id: _, .. } => {
-            dbg!("system tray received a mouse leave ");
-            let window = tray_icon.app_handle().get_webview_window("main").unwrap();
-            window.hide_menu().unwrap();
-        },
+        //     match menu {
+        //         Some(menu) => {
+        //             dbg!("Tem um menu no tray.app_handle()");
+        //             window.popup_menu(&menu).unwrap();
+        //         },
+        //         None => {
+        //             dbg!("Não tem um menu no tray.app_handle()");
+        //         }
+        //     }
+        // },
+        // TrayIconEvent::Leave { id: _, .. } => {
+        //     dbg!("system tray received a mouse leave ");
+        //     let window = tray_icon.app_handle().get_webview_window("main").unwrap();
+        //     window.hide_menu().unwrap();
+        // },
         _ => {}
     }
 }
 
-pub fn register_keyboard_shortcuts(app: &AppHandle, config: &AppConfig) {
+pub fn register_keyboard_shortcuts(app: &AppHandle, config: &AppConfig) -> Result<(), tauri_plugin_global_shortcut::Error>{
     let open_key = config.open_shortcut.as_str().replace("Meta", "Super");
     let bookmark_key = config.bookmark_shortcut.as_str().replace("Meta", "Super");
 
@@ -118,8 +121,10 @@ pub fn register_keyboard_shortcuts(app: &AppHandle, config: &AppConfig) {
         global_shortcut_manager.unregister(bookmark_shortcut).unwrap();
     }
 
-    global_shortcut_manager.on_shortcut(open_shortcut, crate::clipboard_manager::handlers::open_shortcut_handler).unwrap();
-    global_shortcut_manager.on_shortcut(bookmark_shortcut, crate::clipboard_manager::handlers::bookmark_shortcut_handler).unwrap();
+    global_shortcut_manager.on_shortcut(open_shortcut, crate::clipboard_manager::handlers::open_shortcut_handler)?;
+    global_shortcut_manager.on_shortcut(bookmark_shortcut, crate::clipboard_manager::handlers::bookmark_shortcut_handler)?;
+
+    Ok(())
 }
 
 pub fn open_shortcut_handler<T, U>(app: &'_ AppHandle, _: &'_ T, _: U) {
@@ -127,15 +132,20 @@ pub fn open_shortcut_handler<T, U>(app: &'_ AppHandle, _: &'_ T, _: U) {
 }
 
 pub fn bookmark_shortcut_handler<T, U>(app: &'_ AppHandle, _: &'_ T, _: U) {
-    let history = app.state::<ClipboardHistory>();
+    let history_reader = app.state::<Arc<RwLock<ClipboardHistory>>>();
+    let history = history_reader.read().unwrap();
     let items = history.get_items();
+dbg!("Fomos?");
+    drop(history);
     if let Some(last_item) = items.first() {
-        let bookmarks = app.state::<Arc<Mutex<Vec<Bookmark>>>>();
-        let bm = bookmarks.lock().unwrap();
+        let bookmarks = app.state::<Arc<RwLock<Vec<Bookmark>>>>().inner();
+        let bm = bookmarks.write().unwrap();
         // Check if item is already bookmarked
         if let Some(index) = bm.iter().position(|b| b.content == *last_item) {
+            drop(bm);
             let _ = crate::commands::remove_bookmark(app.to_owned(), index);
         } else {
+            drop(bm);
             let _ = crate::commands::add_bookmark(app.to_owned(), last_item.clone());
         }
     }

@@ -69,8 +69,6 @@ pub fn run() {
             // Load configs and manage state
             let (app_config, bookmarks) = load_file_configs(app);
             let config = app_config.clone();
-            app.manage(Arc::new(RwLock::new(app_config)));
-            app.manage(Arc::new(RwLock::new(bookmarks)));
 
             //// sets up the autostart function
             let autostart_manager = app.autolaunch();
@@ -84,7 +82,9 @@ pub fn run() {
             use crate::clipboard_manager::history::Handler;
             use clipboard_master::Master;
 
-            app.manage(ClipboardHistory::new());
+            app.manage(Arc::new(RwLock::new(app_config)));
+            app.manage(Arc::new(RwLock::new(bookmarks)));
+            app.manage(Arc::new(RwLock::new(ClipboardHistory::new(config.max_items))));
 
             //// Sets up the tray menu
             setup_tray_menu(&app.handle(), None);
@@ -92,9 +92,11 @@ pub fn run() {
             //// Start a thread with the clipboard listener
             let app_handle = Arc::new(RwLock::new(app.handle().to_owned()));
             std::thread::spawn(move || {
+                let handler = Handler::new(app_handle);
                 // Set up clipboard listener
-                let mut master = Master::new(Handler::new(app_handle));
+                let mut master = Master::new(handler);
                 master.run().expect("run monitor");
+                
             });
 
 
@@ -105,8 +107,8 @@ pub fn run() {
             let open_shortcut = Shortcut::from_str(&open_key).unwrap();
             let bookmark_shortcut = Shortcut::from_str(&bookmark_key).unwrap();
 
-            global_shortcut_manager.on_shortcut(open_shortcut, clipboard_manager::handlers::open_shortcut_handler).unwrap();
-            global_shortcut_manager.on_shortcut(bookmark_shortcut, clipboard_manager::handlers::bookmark_shortcut_handler).unwrap();
+            let _ = global_shortcut_manager.on_shortcut(open_shortcut, clipboard_manager::handlers::open_shortcut_handler);
+            let _ = global_shortcut_manager.on_shortcut(bookmark_shortcut, clipboard_manager::handlers::bookmark_shortcut_handler);
 
             //app.manage(global_shortcut_manager);
 
@@ -125,7 +127,10 @@ pub fn run() {
             commands::add_bookmark,
             commands::set_config,
             commands::get_config,
-            commands::hide_window
+            commands::hide_window,
+            commands::get_clipboard_items, // Add the new command
+            commands::toggle_bookmark,    // Add the new command
+            commands::delete_clipboard_item // Add for future use
         ))
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -42,4 +42,14 @@ span {
 ::ng-deep .config-form p-panel {
     display: flex;
     width: 80%;
+    justify-content: center;
+}
+
+::ng-deep .config-form p-panel .p-panel-content {
+    display: flex;
+    justify-content: center;
+}
+
+::ng-deep .field {
+    min-height: 62px;
 }

@@ -89,6 +89,9 @@ pub fn handle_tray_icon_event(tray_icon: &TrayIcon, event: tauri::tray::TrayIcon
                 let window = tray_icon.app_handle().get_webview_window("main").unwrap();
                 let menu = tray_icon.app_handle().menu().unwrap();
                 window.popup_menu(&menu).unwrap();
+                if !window.is_visible().unwrap() {
+                    window.show().unwrap();
+                }
                 //window.show().unwrap();
             }
             _ => {

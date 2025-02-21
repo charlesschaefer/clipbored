@@ -176,8 +176,15 @@ export class ConfigFormComponent {
         if (this.configForm.valid) {
             console.log(this.config());
             invoke('set_config', { config: this.config() }).then(() => {
-                console.log('Settings Saved');
-                invoke('hide_window');
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Success',
+                    detail: 'Settings saved successfully. The window will be minimized to the system tray now.',
+                    life: 4000
+                });
+                setTimeout(() => {
+                    invoke('hide_window');
+                }, 4000);
             }).catch((error) => {
                 console.log('Settings Saved', error);
                 this.messageService.add({

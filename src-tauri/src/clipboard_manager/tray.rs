@@ -32,12 +32,13 @@ pub fn setup_tray_menu(app_handle: &AppHandle, update_tray: Option<bool>) {
     // Create initial empty menu
     let menu_items = history_as_menu_items_for_tray(&items);
 
-    menu = menu.item(&MenuItemBuilder::new("BOOKMARKS")
-        .enabled(false)
-        .build(app_handle)
-        .unwrap()
+    menu = menu.item(
+        &MenuItemBuilder::new("BOOKMARKS")
+            .enabled(false)
+            .build(app_handle)
+            .unwrap()
     );
-
+    
     // Combine bookmarks and history (bookmarks first)
     for (id, text) in bookmark_menu_items {
         let item = IconMenuItemBuilder::new(text)
@@ -55,6 +56,8 @@ pub fn setup_tray_menu(app_handle: &AppHandle, update_tray: Option<bool>) {
         .build(app_handle)
         .unwrap()
     );
+
+
 
     for (id, text) in menu_items {
         // let checked = if (i as usize) == (items.len() - 1) { true } else { false };
@@ -100,7 +103,9 @@ pub fn setup_tray_menu(app_handle: &AppHandle, update_tray: Option<bool>) {
 
     // holds the menu in the AppHandle's internal state so we can access it to show when user passes the mouse 
     // over the tray icon
-    //app_handle.set_menu(built_menu.clone()).unwrap();
+    app_handle.set_menu(built_menu.clone()).unwrap();
+    app_handle.hide_menu().unwrap();
+    
 
     if let Some(_) = update_tray {
         // Update the tray menu
@@ -118,6 +123,7 @@ pub fn setup_tray_menu(app_handle: &AppHandle, update_tray: Option<bool>) {
             .on_tray_icon_event(move |tray_icon, event| {
                 handle_tray_icon_event(tray_icon, event);
             })
+            .tooltip("Click to open clipboard history and clipboard bookmarks")
             .build(app_handle)
             .unwrap();
     }

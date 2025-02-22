@@ -98,26 +98,6 @@ pub fn handle_tray_icon_event(tray_icon: &TrayIcon, event: tauri::tray::TrayIcon
                 dbg!("system tray received a middle or right click");
             }
         },
-        // TrayIconEvent::Enter { id: _, .. } => {
-        //     dbg!("system tray received a mouse enter ");
-        //     let window = tray_icon.app_handle().get_webview_window("main").unwrap();
-        //     let menu = tray_icon.app_handle().menu();
-
-        //     match menu {
-        //         Some(menu) => {
-        //             dbg!("Tem um menu no tray.app_handle()");
-        //             window.popup_menu(&menu).unwrap();
-        //         },
-        //         None => {
-        //             dbg!("Não tem um menu no tray.app_handle()");
-        //         }
-        //     }
-        // },
-        // TrayIconEvent::Leave { id: _, .. } => {
-        //     dbg!("system tray received a mouse leave ");
-        //     let window = tray_icon.app_handle().get_webview_window("main").unwrap();
-        //     window.hide_menu().unwrap();
-        // },
         _ => {}
     }
 }

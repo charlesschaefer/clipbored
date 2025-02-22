@@ -30,10 +30,6 @@ export class ClipboardListComponent implements OnInit{
         listen('clipboard-updated', () => {
             this.loadClipboardItems(); // Reload items on event
         })
-        // .then((unlisten) => {
-        //     // Keep the unlisten function to unsubscribe later, e.g., in ngOnDestroy
-        //     // this.unlistenClipboardUpdate = unlisten;
-        // });
     }
 
     async loadClipboardItems() {

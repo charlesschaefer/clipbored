@@ -12,7 +12,6 @@ use crate::commands::Bookmark;
 use std::sync::{Arc, RwLock};
 
 pub fn setup_tray_menu(app_handle: &AppHandle, update_tray: Option<bool>) {
-    //let menu = Menu::new(app_handle).unwrap();
     let mut menu = MenuBuilder::new(app_handle);
     let items: Vec<String>;
     if let Some(_) = update_tray {
@@ -22,7 +21,6 @@ pub fn setup_tray_menu(app_handle: &AppHandle, update_tray: Option<bool>) {
     }
 
     // Load the bookmark icon *once*
-    //let bookmark_icon = app_handle.asset_resolver().get("assets/bookmark.ico".to_string()).expect("Failed to load bookmark icon");
     let bookmark_icon = include_image!("../src/assets/bookmark.ico");
 
     // Create bookmark menu items
@@ -60,7 +58,6 @@ pub fn setup_tray_menu(app_handle: &AppHandle, update_tray: Option<bool>) {
 
 
     for (id, text) in menu_items {
-        // let checked = if (i as usize) == (items.len() - 1) { true } else { false };
         let item = CheckMenuItemBuilder::new(text)
             .id(id)
             .checked(false)
@@ -72,29 +69,9 @@ pub fn setup_tray_menu(app_handle: &AppHandle, update_tray: Option<bool>) {
         // menu.append(&item).unwrap();
     }
 
-    // let image: Image<'_>;
-    // let asset = match app_handle.asset_resolver().get("icon.png".to_string()) {
-    //     Some(img) => {
-    //         dbg!("Deu bom na imagem");
-    //         let mut bytes: [u8] = [];
-    //         bytes.copy_from_slice(img.bytes());
-    //         let mut b2 = bytes.clone();
-    //         b2.copy_from_slice(bytes);
-    //         image = Image::new(b2, 136, 136);
-    //     },
-    //     _ => {
-    //         dbg!("deu ruim demais");
-    //         image = Image::new(&[0u8;0], 0, 0);
-    //     }
-    // };
-    // //let image = Image::new(&asset, 136, 136);
-    // let test = IconMenuItem::with_id(app_handle, "img", "Image", true, Some(image), None::<&str>).unwrap();
     // Add separator and quit
     let quit_item = MenuItem::with_id(app_handle, "quit", "Quit", true, None::<&str>).unwrap();
     let show_item = MenuItem::with_id(app_handle, "show", "Settings", true, None::<&str>).unwrap();
-    // menu.append(&test).unwrap();
-    // menu.append(&show_item).unwrap();
-    // menu.append(&quit_item).unwrap();
 
     let built_menu = menu.separator()
         .item(&show_item)
@@ -173,23 +150,3 @@ pub fn bookmarks_as_menu_items_for_tray(bookmarks: &Vec<Bookmark>) -> Vec<(Strin
 
     menu_items
 }
-//     let mut menu_items = Vec::new();
-
-//     for (index, bookmark) in bookmarks.iter().enumerate() {
-//         let display_text = if bookmark.content.len() > 30 {
-//             format!("{}...", &bookmark.content[..30])
-//         } else {
-//             bookmark.content.clone()
-//         };
-
-//         // Use IconMenuItemBuilder for items with icons
-//         let item = IconMenuItem::new(
-//             display_text,
-//             true,
-//             Some(icon.clone()),
-//             Some(format!("bookmark_{}", index)), // Use a different prefix for bookmark IDs
-//         );
-//         menu_items.push(item);
-//     }
-//     menu_items
-// }

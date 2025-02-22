@@ -39,9 +39,6 @@ pub fn set_config(app: tauri::AppHandle, config: AppConfig) -> Result<(), String
         return Err(error.to_string());
     }
 
-    //let mut app_config = app.state::<Arc<Mutex<AppConfig>>>().inner().lock().unwrap();
-    //let mut app_config = app.state::<Arc<Mutex<AppConfig>>>().get_mut().unwrap();
-    //app_config.clone_from(&config);//.clone_into(app_config);
     let mut app_config = app.state::<Arc<RwLock<AppConfig>>>().inner().write().unwrap();
     *app_config = config;
 
@@ -120,7 +117,6 @@ pub fn hide_window(app: tauri::AppHandle) {
     app.get_webview_window("main").unwrap().hide().unwrap();
 }
 
-// Add a helper function to handle the file saving.
 fn save_config_to_file(
     app: &tauri::AppHandle,
     config: &AppConfig,
@@ -159,7 +155,6 @@ pub fn get_clipboard_items(app: tauri::AppHandle) -> Vec<String> {
     history.get_items()
 }
 
-// New command: toggle_bookmark (add and remove)
 #[tauri::command]
 pub fn toggle_bookmark(app: tauri::AppHandle, content: String) -> Result<(), String> {
     // 1. Check if it's already a bookmark.
@@ -193,7 +188,6 @@ pub fn toggle_bookmark(app: tauri::AppHandle, content: String) -> Result<(), Str
     Ok(())
 }
 
-// New command: delete_clipboard_item
 #[tauri::command]
 pub fn delete_clipboard_item(app: tauri::AppHandle, item: String) -> Result<(), String> {
     let history = app.state::<Arc<RwLock<ClipboardHistory>>>().inner().write().unwrap();

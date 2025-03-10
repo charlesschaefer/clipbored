@@ -57,15 +57,15 @@ jobs:
           npm clean-install --include prod --include dev --include peer --verbose
           npm install --save-dev @tauri-apps/cli @tauri-apps/api rollup
       
-      - name: fills the updater private key
-        run: echo "${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}" > $RUNNER_TEMP/signing_private.key
+    #   - name: fills the updater private key
+    #     run: echo "" > ./signing_private.key
 
       - name: Build the app bundles and signatures, when available
         id: build
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAURI_SIGNING_PRIVATE_KEY: $RUNNER_TEMP/signing_private.key
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
         with:
           tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: 'App v__VERSION__'

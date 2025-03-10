@@ -30,6 +30,15 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDc0QUE3NDgwMDVGNDg5RUYKUldUdmlmUUZnSFNxZEpEVmd0M1pENXRRYU9BVWRkVzFPaVNzSmEwVi8ydDIzMFc1Q2pUcUhYZHcK",
+      "windows": {
+        "installMode": "passive"
+      }
+    }
   }
 }

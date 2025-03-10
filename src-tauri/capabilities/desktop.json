@@ -16,6 +16,7 @@
     "global-shortcut:allow-unregister",
     "global-shortcut:allow-unregister-all",
     "autostart:default",
-    "global-shortcut:default"
+    "global-shortcut:default",
+    "updater:default"
   ]
 }

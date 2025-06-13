@@ -50,8 +50,8 @@ export class ConfigFormComponent {
     configForm: FormGroup;
     config = signal<AppConfig>({
         maxItems: 10,
-        openShortcut: 'Ctrl+Shift+V',
-        bookmarkShortcut: 'Ctrl+Shift+B',
+        openShortcut: 'Ctrl+Super+V',
+        bookmarkShortcut: 'Ctrl+Super+B',
         startMinimized: false
     });
     tempShortcutValue = '';
@@ -69,8 +69,8 @@ export class ConfigFormComponent {
     constructor(private fb: FormBuilder, private messageService: MessageService) {
         this.configForm = this.fb.group({
             maxItems: [10, [Validators.required, Validators.min(1)]],
-            openShortcut: ['Ctrl+Shift+V', Validators.required],
-            bookmarkShortcut: ['Ctrl+Shift+V', Validators.required],
+            openShortcut: ['Ctrl+Super+V', Validators.required],
+            bookmarkShortcut: ['Ctrl+Super+B', Validators.required],
             startMinimized: [false],
         });
 

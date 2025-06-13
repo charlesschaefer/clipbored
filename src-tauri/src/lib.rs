@@ -26,8 +26,8 @@ fn load_file_configs(app: &App) -> (AppConfig, Vec<Bookmark>) {
                 // Defaults
                 AppConfig {
                     max_items: 10,
-                    open_shortcut: "Ctrl+Shift+V".into(),
-                    bookmark_shortcut: "Ctrl+Shift+B".into(),
+                    open_shortcut: "Ctrl+Super+V".into(),
+                    bookmark_shortcut: "Ctrl+Super+B".into(),
                     start_minimized: false,
                 }
             })
@@ -36,12 +36,14 @@ fn load_file_configs(app: &App) -> (AppConfig, Vec<Bookmark>) {
             // Defaults
             AppConfig {
                 max_items: 10,
-                open_shortcut: "Ctrl+Shift+V".into(),
-                bookmark_shortcut: "Ctrl+Shift+B".into(),
+                open_shortcut: "Ctrl+Super+V".into(),
+                bookmark_shortcut: "Ctrl+Super+B".into(),
                 start_minimized: false,
             }
         }
     };
+    
+    dbg!("Loaded app config: {:?}", &app_config);
 
     let bookmark_path = save_path.join("bookmarks.json"); // Corrected path
     let bookmarks = match fs::read_to_string(&bookmark_path) {
